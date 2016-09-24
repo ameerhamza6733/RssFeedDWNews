@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_facebook"
+
+            android:icon="@drawable/facebook_icon"
+            android:title="Face Book"/>
+        <item
+            android:id="@+id/nav_Live_Tv"
+
+            android:icon="@drawable/tv_icon"
+            android:title="Live Tv"/>
+        <item
+            android:id="@+id/nav_twitter"
+
+            android:icon="@drawable/twitter_icon"
+            android:title="Twitter"/>
+
+    </group>
+
+    <item android:title="Tools">
+        <menu>
+            <item
+                android:id="@+id/nav_Setting"
+
+                android:icon="@drawable/ic_settingsp"
+                android:title="Setting"/>
+
+        </menu>
+    </item>
+
+</menu>

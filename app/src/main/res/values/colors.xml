@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#2196f3</color>
+    <color name="colorPrimaryDark">#2196f3</color>
+    <color name="colorAccent">#FF4081</color>
+<!--<drawable name="Colore_select">#3e3c3d</drawable>-->
+    <!--<drawable name="Colore_selected">#959ea6</drawable>-->
+
+
+<drawable name="itempressd">#363738</drawable>
+    <drawable name="itemSelected">#a2a3a4</drawable>
+
+
+
+</resources>

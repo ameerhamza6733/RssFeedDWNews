@@ -1,0 +1,93 @@
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    android:layout_margin="8dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        >
+
+        <TextView
+            android:id="@+id/item_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/item_thumbnail"
+           android:padding="8dp"
+            android:textColor="#666"
+            android:textSize="17sp"
+            android:text="بھارت کوپاکستان فوبیا ہوگیا ہے،وہ ہر حملے کا ذمہ دار پاکستان کو قرار دیتا ہےمگرمجال ہےکہ ایک الزام کو بھی ثابت کرسکاہو"
+            tools:text="بھارت کوپاکستان فوبیا ہوگیا ہے،وہ ہر حملے کا ذمہ دار پاکستان کو قرار دیتا ہےمگرمجال ہےکہ ایک الزام کو بھی ثابت کرسکاہو" />
+
+
+        <TextView
+            android:id="@+id/date"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/item_detail"
+            android:padding="8dp"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/date"
+            android:layout_toLeftOf="@+id/imageButton"
+            android:layout_toStartOf="@+id/imageButton"
+            android:paddingBottom="8dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="20dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/item_detail"
+            android:background="@null"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:src="@drawable/ic_dots" />
+
+        <ImageView
+            android:id="@+id/item_thumbnail"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/back_ground_image"
+            android:layout_alignParentTop="true"
+
+            />
+
+        <TextView
+            android:id="@+id/item_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+android:padding="8dp"
+            android:paddingTop="24dp"
+            android:textColor="#222"
+            android:textSize="22sp"
+            android:textStyle="bold"
+
+            android:layout_alignTop="@+id/item_thumbnail"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="41dp"
+            android:layout_toRightOf="@+id/item_thumbnail"
+            android:layout_toEndOf="@+id/item_thumbnail" />
+
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>
+
