@@ -131,7 +131,7 @@ public class HalatHazraFragment extends Fragment {
 
 
         }else {
-            if(mProgressBar!=null && mDataset.isEmpty())
+            if(mProgressBar!=null && !mDataset.isEmpty())
             {
 
                 mProgressBar.setVisibility(View.INVISIBLE);

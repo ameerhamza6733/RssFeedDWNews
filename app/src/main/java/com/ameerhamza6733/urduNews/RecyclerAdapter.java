@@ -72,6 +72,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             Picasso.with(holder.mview.getContext())
                     .load(rssItem.getImageUrl())
                    .placeholder(R.drawable.back_ground_image)
+                    .centerCrop()
                     .fit()
                     .into(holder.mImage);
             Log.i("Inside if in picasso", Boolean.toString(mySwitchIsChecked));

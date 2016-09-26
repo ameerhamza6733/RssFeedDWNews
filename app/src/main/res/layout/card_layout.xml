@@ -60,6 +60,7 @@
             android:src="@drawable/ic_dots" />
 
         <ImageView
+            android:paddingTop="8dp"
             android:id="@+id/item_thumbnail"
             android:layout_width="150dp"
             android:layout_height="150dp"
