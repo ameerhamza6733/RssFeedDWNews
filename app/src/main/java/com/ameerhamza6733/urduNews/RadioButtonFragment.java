@@ -15,13 +15,13 @@ import android.widget.Toast;
 public class RadioButtonFragment extends DialogFragment {
     String singleitem;
     private int witch;
-    private MySharedPreferences mySharedPreferences = new MySharedPreferences();
+
     private String[] item = {"Naskh asiatype", "Fajer noori Nastaleeq", "Pak nastaleeq (default)"};
 
     @Override
     public void onResume() {
         super.onResume();
-       witch= mySharedPreferences.loadIntPrefs(Constants.RADIO_BUTTON_INDEX_KEY,2,getActivity());
+      // witch= mySharedPreferences.loadIntPrefs(Constants.RADIO_BUTTON_INDEX_KEY,2,getActivity());
 
     }
 
@@ -30,13 +30,13 @@ public class RadioButtonFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        witch= mySharedPreferences.loadIntPrefs(Constants.RADIO_BUTTON_INDEX_KEY,2,getActivity());
+       // witch= mySharedPreferences.loadIntPrefs(Constants.RADIO_BUTTON_INDEX_KEY,2,getActivity());
         builder.setTitle("please selet any fount").setSingleChoiceItems(item, witch, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 singleitem= item[which];
-                mySharedPreferences.saveStringPrefs(Constants.FONT_KEY,singleitem,getActivity());
-                mySharedPreferences.saveintPrefs(Constants.RADIO_BUTTON_INDEX_KEY,which,getActivity());
+                //mySharedPreferences.saveStringPrefs(Constants.FONT_KEY,singleitem,getActivity());
+               // mySharedPreferences.saveintPrefs(Constants.RADIO_BUTTON_INDEX_KEY,which,getActivity());
                 Toast.makeText(getContext(),"Font is selected"+which,Toast.LENGTH_SHORT).show();
 
             }

@@ -76,9 +76,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 android:padding="8dp"
-            android:paddingTop="24dp"
+            android:paddingTop="18dp"
             android:textColor="#222"
-            android:textSize="22sp"
+            android:textSize="17sp"
             android:textStyle="bold"
 
             android:layout_alignTop="@+id/item_thumbnail"

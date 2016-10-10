@@ -17,7 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.animation.AccelerateInterpolator;
+
 import android.widget.Switch;
 
 import it.neokree.materialtabs.MaterialTab;
@@ -29,13 +29,9 @@ implements NavigationView.OnNavigationItemSelectedListener, MaterialTabListener 
     MaterialTabHost tabHost;
     private String[] tabs;
     ViewPager mViewPager;
-    public static Context context;
-    public static Activity activity;
-    private Switch mySwitch;
-    private MySharedPreferences mySharedPreferences = new MySharedPreferences();
-    private String TAG="MainActivity";
-    private MaterialTab materialTab;
-    private int CurrentTab;
+
+
+
 
 
     @Override
@@ -44,15 +40,20 @@ implements NavigationView.OnNavigationItemSelectedListener, MaterialTabListener 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setElevation(0);
+     try {
+         getSupportActionBar().setElevation(0);
+     }catch (Exception e)
+     {
 
-        activity=this;
+     }
+
+
 
 
         tabs = getResources().getStringArray(R.array.tabs);
         tabHost = (MaterialTabHost) this.findViewById(R.id.materialTabHost);
         mViewPager = (ViewPager) this.findViewById(R.id.myViewPager);
-        context=getApplicationContext();
+
 
 
        //Log.i(TAG,String.valueOf( );
@@ -118,8 +119,8 @@ implements NavigationView.OnNavigationItemSelectedListener, MaterialTabListener 
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Intent intent = new Intent(this,SettingsActivity.class);
-            startActivity(intent);
+//            Intent intent = new Intent(this,SettingsActivity.class);
+//            startActivity(intent);
             return true;
         }
 

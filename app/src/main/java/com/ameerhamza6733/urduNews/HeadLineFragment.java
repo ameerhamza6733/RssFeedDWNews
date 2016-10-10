@@ -1,8 +1,10 @@
 package com.ameerhamza6733.urduNews;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -27,8 +29,10 @@ import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 
 import java.net.URLEncoder;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 
@@ -47,14 +51,18 @@ public class HeadLineFragment extends Fragment {
     protected RecyclerView.LayoutManager mLayoutManager;
     protected ArrayList<RssItem> mDataset = new ArrayList<>();
     protected ProgressBar mProgressBar;
-    protected RelativeLayout mRelativeLayout;
-    protected Button mButton;
-    private Elements metalinks;
+    protected Activity myActivity;
+
+
     private String mImageURL;
-    private Document documentImage;
+
     private int mItemNumber;
-    private boolean isVisibleToUser;
+
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private int indexofThePost;
+
+    private DateFormat df;
+    private String CurrentDay;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,6 +86,7 @@ public class HeadLineFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.my_recycler_view_fragment, container, false);
         Log.d(TAG, "onCreateView: ");
         this.view = rootView;
+        myActivity=getActivity();
         mProgressBar = (ProgressBar) rootView.findViewById(R.id.Progressbar);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         mSwipeRefreshLayout =(SwipeRefreshLayout)rootView.findViewById(R.id.swipeRefreshLayout);
@@ -186,11 +195,10 @@ public class HeadLineFragment extends Fragment {
         private Context mContext;
         private String mTitle, mDescription, mLink, mPubDate;
         private String mCategory;
-        private MySharedPreferences mySharedPreferences = new MySharedPreferences();
-        private final String Not_interasted_catguty_in_Cutture = mySharedPreferences.loadStringPrefs(Constants.REMOVE_KEY_CULTURE_CATEGORY, "N/A", getActivity());
-        private final String Not_interasted_catguty_in_Since = mySharedPreferences.loadStringPrefs(Constants.REMOVE_KEY_SINCE_CATEGORY, "N/A", getActivity());
-        private final String Not_interasted_catguty_in_Sport = mySharedPreferences.loadStringPrefs(Constants.REMOVE_KEY_SPORT_CATEGORY, "N/A", getActivity());
-        private final String Not_interasted_catguty_in_Socity = mySharedPreferences.loadStringPrefs(Constants.REMOVE_KEY_SOCITY_CATEGORY, "N/A", getActivity());
+
+
+        private String mysubstring;
+        private String mMints;
 
 
         public LoadRssFeedsItems(Context context) {
@@ -219,30 +227,39 @@ public class HeadLineFragment extends Fragment {
                     mLink = element.select("link").first().text();
                     mPubDate = element.select("pubDate").first().text();
                     mCategory = element.select("category").first().text();
-                    SimpleDateFormat date_format = new SimpleDateFormat("EEE', 'dd' 'MMM' 'yyyy' 'HH:mm:ss' 'Z");
+                    mImageURL = element.select("media|content").attr("url").toString();
 
 
-                    Date pubdate = date_format.parse(mPubDate);
+                     CurrentDay = mPubDate.substring(0, 3);
+                    mMints = mPubDate.substring(16,22);
+
+                     df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
+                    String date = df.format(Calendar.getInstance().getTime());
+                    if(date.substring(0,3).equals(CurrentDay)) {
+                        mPubDate=mPubDate.replace(mPubDate, "آج").concat(mMints);
+                    }else {
+                        mPubDate=mPubDate.substring(0,3).concat(mMints);
+                    }
+                   
+                    mDescription=Jsoup.parse(mDescription).text();
+
+                    indexofThePost = mDescription.indexOf(Constants.THE_psot);
+
+                     mysubstring = mDescription.substring(indexofThePost, mDescription.length());
+                    mDescription = mDescription.replace(mysubstring, "");
+                    
 
                     Log.i(TAG, "Item title: " + (mTitle == null ? "N/A" : mTitle));
                     Log.i(TAG, "Item Description: " + (mDescription == null ? "N/A" : mDescription));
                     Log.i(TAG, "Item link: " + (mLink == null ? "N/A" : mLink));
-                    Log.i(TAG, "Item data: " + (pubdate == null ? "N/A" : pubdate));
+                    Log.i(TAG, "Item data: " + (mPubDate == null ? "N/A" : mPubDate));
                     Log.i(TAG, "Item image link: " + (mImageURL == null ? "N/A" : mImageURL));
                     Log.i(TAG, "item: : " + mItemNumber);
-                    if (mCategory.equals(Not_interasted_catguty_in_Cutture)) {
-                        continue;
 
-                    } else if (mCategory.equals(Not_interasted_catguty_in_Since)) {
-                        continue;
-                    } else if (mCategory.equals(Not_interasted_catguty_in_Socity)) {
-                        continue;
-                    } else if (mCategory.equals(Not_interasted_catguty_in_Sport)) {
-                        continue;
-                    } else {
-                        rssItem = new RssItem(mTitle, mDescription, mPubDate, mLink, mCategory, mItemNumber, getActivity());
+                       
+                        rssItem = new RssItem(mTitle, mDescription, mPubDate, mLink, mCategory, mItemNumber,mImageURL, getActivity(),myActivity);
                         mDataset.add(rssItem);
-                    }
+
 
 
                 }
@@ -279,62 +296,15 @@ public class HeadLineFragment extends Fragment {
                 mSwipeRefreshLayout.setRefreshing(false);
                 mAdapter = new RecyclerAdapter(mDataset);
                 mRecyclerView.setAdapter(mAdapter);
-                if (!new MySharedPreferences().loadPrefs(Constants.switchStateKey, false, MainActivity.context)) {
-                    getImageUrls get_ImageUrls = new getImageUrls();
-                    get_ImageUrls.execute();
-                }
+              
+              
+                
 
             }
 
         }
     }
 
-    private class getImageUrls extends AsyncTask<Void, Void, Void> {
-        String mLink;
-        String mLastHalfUrl;
-        String url;
-        int dash_A_index;
 
-        @Override
-        protected Void doInBackground(Void... params) {
-
-            Log.i(TAG, "Item image link in seacond thread: " + (mImageURL == null ? "N/A" : mImageURL));
-
-            try {
-                for (int i = 0; i < mDataset.size(); i++) {
-                    Thread.sleep(50);
-                    mLink = mDataset.get(i).getPostLink();
-
-
-
-                    dash_A_index = mLink.indexOf(Constants.BACK_SLASH_A);
-                    mLastHalfUrl = mLink.substring(dash_A_index);
-                    url = mLink.replace(Constants.BASE_URL, "");
-                    url = url.replace(mLastHalfUrl, "");
-                    url = StringUtils.replaceEach(URLEncoder.encode(url, "UTF-8"), new String[]{"+", "*", "%7E"}, new String[]{"%20", "%2A", "~"});
-                    StringBuilder sb = new StringBuilder(url);
-                    url = sb.append(mLastHalfUrl).toString();
-                    url = Constants.BASE_URL + url;
-                    documentImage = Jsoup.connect(url).timeout(Constants.TIME_OUT).get();
-                    metalinks = documentImage.select(Constants.MATA_PROPTY_IMAGE);
-                    mImageURL = metalinks.attr(Constants.CONTENT);
-                    Log.i(TAG, "Item image link in seacond thread home page: " + (mImageURL == null ? "N/A" : mImageURL));
-                    mDataset.get(i).setImageUrl(mImageURL);
-
-                }
-
-            } catch (Exception e) {
-
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-
-            Constants.IS_GET_IMAGE_URL = true;
-            mAdapter.notifyDataSetChanged();
-        }
-    }
 
 }

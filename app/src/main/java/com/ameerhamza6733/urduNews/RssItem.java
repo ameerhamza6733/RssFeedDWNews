@@ -1,5 +1,6 @@
 package com.ameerhamza6733.urduNews;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Parcel;
@@ -22,6 +23,7 @@ public class RssItem implements Parcelable {
     private Bitmap bitmap;
     private Context context;
     private int itemNumber;
+    private Activity activity;
 
     protected RssItem(Parcel in) {
         title = in.readString();
@@ -49,6 +51,10 @@ public class RssItem implements Parcelable {
         }
     };
 
+    public Activity getActivity() {
+        return activity;
+    }
+
     public int getItemNumber() {
         return itemNumber;
     }
@@ -62,16 +68,16 @@ public class RssItem implements Parcelable {
     }
 
 
-    public RssItem(String title, String description, String pubDate,String postLink,String category,int itemNumber,Context context) {
+    public RssItem(String title, String description, String pubDate, String postLink, String category, int itemNumber, String mImageURL, Context context, Activity activity) {
         this.title = title;
         this.description = description;
         this.pubDate=pubDate;
-        // this.bitmap=bitmap;
         this.context =context;
-        this.imageUrl =imageUrl;
+        this.imageUrl=mImageURL;
         this.postLink=postLink;
         this.itemNumber= itemNumber;
         this.category=category;
+        this.activity=activity;
 
     }
 

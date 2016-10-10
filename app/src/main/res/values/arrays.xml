@@ -2,9 +2,9 @@
 <resources>
     <string-array name="tabs">
         <item>Home page</item>
-        <item>Current Affairs</item>
+        <item>Pakistan</item>
         <item>More</item>
-        <item>Health</item>
+
 
         <item>Art and culture</item>
     </string-array>

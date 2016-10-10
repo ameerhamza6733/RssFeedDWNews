@@ -1,6 +1,7 @@
 package com.ameerhamza6733.urduNews;
 
 
+import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,7 +25,10 @@ import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 
 import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Created by DELL 3542 on 7/19/2016.
@@ -40,6 +44,8 @@ public class HalatHazraFragment extends Fragment {
     protected RecyclerAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
     protected ArrayList<RssItem> mDataset = new ArrayList<>();
+    protected Activity activity;
+
     private Elements metalinks;
     private String mImageURL;
     private Document documentImage;
@@ -51,6 +57,10 @@ public class HalatHazraFragment extends Fragment {
 
 
     private boolean IsTaskRun=true;
+    private int indexofThePost;
+    private String CurrentDay;
+    private String mMints;
+    private DateFormat df;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,6 +71,7 @@ public class HalatHazraFragment extends Fragment {
         // rootView.setTag(TAG);
 
         view = rootView;
+        activity=getActivity();
         Log.i(TAG, "Inside onCreateView");
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
@@ -104,7 +115,7 @@ public class HalatHazraFragment extends Fragment {
     private void refreshItems() {
 
         mDataset.clear();
-        new LoadRssFeedsItems().execute(Constants.HALAT_HAZRA);
+        new LoadRssFeedsItems().execute(Constants.PAKISTAN);
 
     }
 
@@ -123,7 +134,7 @@ public class HalatHazraFragment extends Fragment {
                 {
                     IsTaskRun=false;
                     mLoadRssFeedsItems= new LoadRssFeedsItems();
-                    mLoadRssFeedsItems .execute(Constants.HALAT_HAZRA);
+                    mLoadRssFeedsItems .execute(Constants.PAKISTAN);
 
                     Log.i(TAG, "start task setUserVisibleHint");
 
@@ -209,13 +220,33 @@ public class HalatHazraFragment extends Fragment {
                     mLink = element.select("link").first().text();
                     mPubDate = element.select("pubDate").first().text();
                     mCategory = element.select("Category").first().text();
+                    mImageURL = element.select("media|content").attr("url").toString();
+
+
+
+                    CurrentDay = mPubDate.substring(0, 3);
+                    mMints = mPubDate.substring(16,22);
+
+                    df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
+                    String date = df.format(Calendar.getInstance().getTime());
+                    if(date.substring(0,3).equals(CurrentDay)) {
+                        mPubDate=mPubDate.replace(mPubDate, "آج").concat(mMints);
+                    }else {
+                        mPubDate=mPubDate.substring(0,3).concat(mMints);
+                    }
+
+                    mDescription=Jsoup.parse(mDescription).text();
+                    indexofThePost = mDescription.indexOf(Constants.THE_psot);
+
+                    String mysubstring = mDescription.substring(indexofThePost, mDescription.length());
+                    mDescription = mDescription.replace(mysubstring, "");
                     Log.i(TAG, "Item title in current affairs: " + (mTitle == null ? "N/A" : mTitle));
                     Log.i(TAG, "Item Description in current affairs: " + (mDescription == null ? "N/A" : mDescription));
                     Log.i(TAG, "Item link in  current affairs: " + (mLink == null ? "N/A" : mLink));
                     Log.i(TAG, "Item data in current affairs: " + (mPubDate == null ? "N/A" : mPubDate));
                     Log.i(TAG, "Item image link in current affairs: " + (mImageURL == null ? "N/A" : mImageURL));
                     Log.i(TAG, "int i : " + i);
-                    rssItem = new RssItem(mTitle, mDescription, mPubDate, mLink, mCategory, i, getActivity());
+                    rssItem = new RssItem(mTitle, mDescription, mPubDate, mLink, mCategory, i, mImageURL, getActivity(),activity);
                     mDataset.add(rssItem);
 
                 }
@@ -249,7 +280,7 @@ public class HalatHazraFragment extends Fragment {
                             @Override
                             public void onClick(View view) {
 //                                Snackbar.make(getView(), "CheckIn Cancelled", Snackbar.LENGTH_LONG).show();
-                                new LoadRssFeedsItems().execute(Constants.HALAT_HAZRA);
+                                new LoadRssFeedsItems().execute(Constants.PAKISTAN);
 
 
                             }
@@ -267,58 +298,10 @@ public class HalatHazraFragment extends Fragment {
                 mRecyclerView.setAdapter(mAdapter);
 
 
-                if (!new MySharedPreferences().loadPrefs(Constants.switchStateKey, true, MainActivity.context)) {
-                    getImageUrls get_ImageUrls = new getImageUrls();
-                    get_ImageUrls.execute();
-                }
             }
 
 
         }
     }
 
-    private class getImageUrls extends AsyncTask<Void, Void, Void> {
-        String mLink;
-        String mLastHalfUrl;
-        String url;
-        int dash_A_index;
-
-        @Override
-        protected Void doInBackground(Void... params) {
-
-            Log.i(TAG, "Item image link in seacond thread in current affairs: " + (mImageURL == null ? "N/A" : mImageURL));
-
-            try {
-
-                for (int i = 0; i < mDataset.size(); i++) {
-                    mLink = mDataset.get(i).getPostLink();
-                    dash_A_index = mLink.indexOf(Constants.BACK_SLASH_A);
-                    mLastHalfUrl = mLink.substring(dash_A_index);
-                    url = mLink.replace(Constants.BASE_URL, "");
-                    url = url.replace(mLastHalfUrl, "");
-                    url = StringUtils.replaceEach(URLEncoder.encode(url, "UTF-8"), new String[]{"+", "*", "%7E"}, new String[]{"%20", "%2A", "~"});
-                    StringBuilder sb = new StringBuilder(url);
-                    url = sb.append(mLastHalfUrl).toString();
-                    url = Constants.BASE_URL + url;
-                    documentImage = Jsoup.connect(url).timeout(Constants.TIME_OUT).get();
-                    metalinks = documentImage.select(Constants.MATA_PROPTY_IMAGE);
-                    mImageURL = metalinks.attr(Constants.CONTENT);
-                    Log.i(TAG, "Item image link in current aff: " + (mImageURL == null ? "N/A" : mImageURL));
-                    mDataset.get(i).setImageUrl(mImageURL);
-
-                }
-
-            } catch (Exception e) {
-
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            mAdapter.notifyDataSetChanged();
-        }
-    }
-
-    //private class  DownloadDes extends AsyncTask<Void, Void,Void>
 }
