@@ -7,8 +7,10 @@ package com.ameerhamza6733.urduNews;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -37,7 +39,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     private boolean mySwitchIsChecked;
     private boolean RemoveFlag = true;
     protected Activity activity;
-
+    private SharedPreferences sharedPref;
+    protected int fountType;
 
 
     public RecyclerAdapter(List<RssItem> rssItems) {
@@ -53,7 +56,17 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
 
 
+        try {
 
+
+            sharedPref = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
+            String getPref = sharedPref.getString("example_list", "");
+            fountType = Integer.parseInt(getPref);
+            Log.v("fount", "" + fountType);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
         return new MyViewHolder(itemView);
     }
 
@@ -72,6 +85,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                 showPopupMenu(holder.mImageButton, position);
             }
         });
+
 
 
 
@@ -145,6 +159,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        private final Typeface font;
         public TextView mTitle, mDetail, mDate, mCategory;
         public CheckBox mCheckBox;
         public ImageButton mImageButton;
@@ -165,6 +180,24 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             mview = view;
 
 
+            if(fountType==0)
+            {
+
+                font=Typeface.DEFAULT;
+            }
+            else if (fountType==1) {
+                font = Typeface.createFromAsset(view.getContext().getAssets(), "fonts/asunaskh.ttf");
+
+            } else if (fountType==2) {
+
+                font = Typeface.createFromAsset(view.getContext().getAssets(), "fonts/FajerNooriNastalique.ttf");
+            } else if (fountType==3) {
+                font = Typeface.createFromAsset(view.getContext().getAssets(), "fonts/PakNastaleeq.ttf");
+            } else {
+                font = Typeface.DEFAULT;
+            }
+            mTitle.setTypeface(font);
+            mDetail.setTypeface(font);
             view.setOnClickListener(this);
 
 
